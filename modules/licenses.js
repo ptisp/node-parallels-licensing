@@ -6,172 +6,95 @@ var Licenses = function(config) {
 };
 
 /**
- * getKeyNumbers (struct)
- * Searches for Key numbers by specified list of IPs and MACs; returns a list of
-matching Key numbers. The result will be limited to licenses that are accessible
-for the API account - there could be other licenses with these IP addresses not
-included in the result.
- * @param ips[] -  ip array list.
- * @param macs[] - macs array list (optional).
- * @param callback
+ * Searching for License Keys
+ * @param {[type]}   opts
+      ip-address-binding (string). It is used to filter licenses by the IP address that a license key is bound to. Can be both IPv4 and IPv6.
+      nickname (string). It is used to filter licenses by an alias, custom tag, and other similar properties.
+      uid (string). It is used to filter licenses by the UID with which a license is activated.
+      product (string). It is used to filter licenses by product name aliases.
+      status (string). It is used to filter licenses by status. The allowed values are active, expired, expiring, terminated, suspended.
+      type (string). It is used to filter licenses by license type. The allowed values are master, trial, purchased, lease, lease1m, lease3m, lease6m, lease1y, lease2y, lease3y.
+ * @param {Function} callback
  */
-Licenses.prototype.getKeyNumbers = function (ips, macs, callback) {
-  var ip = [];
-  var mac = [];
-  ip = ip.concat(ips || []);
-  mac = mac.concat(macs || []);
-
-  var param={
-    "login": this.config.username,
-    "password": this.config.password
-  };
-  var p = {
-    "ips": ip,
-    "macs": mac
-  };
-
-  if(typeof macs === 'function'){
-    callback = macs;
+Licenses.prototype.getKeyNumbers = function (opts, callback) {
+  if(typeof opts === 'function'){
+    callback = opts;
   }
 
-  var fparams = [];
-  fparams.push(param || []);
-  fparams.push(p || []);
+  var createOptions = {
+    client: this,
+    opt: opts
+  };
 
-  utils.modem('partner10.getKeyNumbers', fparams, this.config, callback);
+  utils.modem('keys', 'GET', createOptions, callback);
 };
 
 /**
- * getKeyInfo (struct, string)
- * Retrieves Key information by Key number.
- * @param key - String - key number in formats (PLSK.12345678.0001 or PLSK.12345678) or product/key activation code.
- * @param callback
+ * Retrieving a License Key Information
+ * @param String   id       Key ID or Activation Code
+ * @param {Function} callback
  */
-Licenses.prototype.getKeyInfo = function (key, callback) {
-  var param={
-    "login": this.config.username,
-    "password": this.config.password
+Licenses.prototype.getKeyDetails = function (id, callback) {
+
+  var createOptions = {
+    client: this,
+    opt: ''
   };
 
-  var fparams = [];
-  fparams.push(param || []);
-  fparams.push(key || "");
-
-  utils.modem('partner10.getKeyInfo', fparams, this.config, callback);
+  utils.modem('keys/'+id, 'GET', createOptions, callback);
 };
 
 /**
- * createKey (struct, struct, string, string, array)
- * Creates a Key with specified parameters.
- * @param serveraddr {
- *        			ip - String - ip server address
- *        			mac - String - mac server address. }
- * @param clientid - String - ID of the client who will own the created key
- * @param keytype - String - identifier of a keytype for new key
- * @param upgrades[] - Array - array of identifiers of upgrade plans that will be applied to the new key
- * @param callback
+ * Terminating a License Key
+ * @param String   id       Key ID or Activation Code
+ * @param {Function} callback
  */
-Licenses.prototype.createKey = function (serveraddr, clientid, keytype, upgrades, callback) {
+Licenses.prototype.terminateKey = function (id, callback) {
 
-  var ip = [];
-  var mac = [];
-  ip = ip.concat(serveraddr.ip || []);
-  mac = mac.concat(serveraddr.mac || []);
-
-  var param={
-    "login": this.config.username,
-    "password": this.config.password
-  };
-  var p = {
-    "ips": ip,
-    "macs": mac
+  var createOptions = {
+    client: this,
+    opt: ''
   };
 
-  var fparams = [];
-  fparams.push(param || []);
-  fparams.push(p || []);
-  fparams.push(clientid || "");
-  fparams.push(keytype || "");
-
-  if(typeof upgrades === 'function'){
-    callback = upgrades;
-  } else {
-    fparams.push(upgrades || []);
-  }
-
-  utils.modem('partner10.createKey', fparams, this.config, callback);
+  utils.modem('keys/'+id, 'DELETE', createOptions, callback);
 };
 
 /**
- * activateKey (struct, string, string)
- * Activates the specified Virtuozzo and HSPC Key with the specified HWID.
- * @param keynumber - String - key number or activation code of a key which should be activated
- * @param uid - String - UID to use while activating key
- * @param callback
+ * Terminating a License Key
+ * @param String   id       Key ID or Activation Code
+ * @param {Function} callback
  */
-Licenses.prototype.activateKey = function (keynumber, uid, callback) {
+Licenses.prototype.renewKey = function (id, callback) {
 
-  var param={
-    "login": this.config.username,
-    "password": this.config.password
+  var createOptions = {
+    client: this,
+    opt: ''
   };
 
-  var fparams = [];
-  fparams.push(param || []);
-  fparams.push(keynumber || "");
-
-  if(typeof uid === 'function'){
-    callback = uid;
-  } else {
-    fparams.push(uid || "");
-  }
-
-  utils.modem('partner10.activateKey', fparams, this.config, callback);
+  utils.modem('keys/'+id+'/renew', 'GET', createOptions, callback);
 };
 
 /**
- * renewKey (struct, string)
- * Renews an existing key.
- * @param keynumber - String - number of a key to upgrade
- * @param callback
+ * Creating a License Key
+ * @param {[type]}   opts
+      ownerid - String - An ID of a license owner.
+      keyIdentifiers - Empty Array -
+      nickname - String - The text information about a license key (custom tag)
+      items - Array -
+        item - String -
+      autoRenew - Boolean - Specifies whether a license key is renewed automatically by Key Administrator
+ * @param {Function} callback
  */
-Licenses.prototype.renewKey = function (keynumber, callback) {
+Licenses.prototype.createKey = function (opts, callback) {
 
-  var param={
-    "login": this.config.username,
-    "password": this.config.password
+  var createOptions = {
+    client: this,
+    opt: '',
+    body: opts
   };
 
-  var fparams = [];
-  fparams.push(param || []);
-  fparams.push(keynumber || "");
-
-  utils.modem('partner10.renewKey', fparams, this.config, callback);
+  utils.modem('keys/', 'POST', createOptions, callback);
 };
-
-/**
- * upgradeKey (struct, string, string)
- * Upgrades an existing Key with the upgrade plan defined in the method call.
- * @param keynumber - String - number of a key to upgrade
- * @param planname - String - upgrade plan name
- * @param callback
- */
-Licenses.prototype.upgradeKey = function (keynumber, planname, callback) {
-
-  var param={
-    "login": this.config.username,
-    "password": this.config.password
-  };
-
-  var fparams = [];
-  fparams.push(param || []);
-  fparams.push(keynumber || "");
-  fparams.push(planname || "");
-
-  utils.modem('partner10.upgradeKey', fparams, this.config, callback);
-};
-
-
 
 
 module.exports = Licenses;

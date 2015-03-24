@@ -1,7 +1,7 @@
 {
-  "name": "parallels",
-  "description": "PARALLELS API client.",
-  "version": "0.0.1",
+  "name": "parallels-licesing",
+  "description": "PARALLELS API 3.0 client.",
+  "version": "0.0.3",
   "author": "Pedro Pacheco <pedro.mpp@gmail.com>",
   "maintainers": [
     "pedrompp <pedro.mpp@gmail.com>"
@@ -19,8 +19,7 @@
   ],
   "dependencies": {
     "request": "2.21.x",
-    "xml2js": "0.4.x",
-    "xmlrpc": "1.0.2"
+    "JSONStream": "*"
   },
   "main": "./parallels",
   "engines": {
