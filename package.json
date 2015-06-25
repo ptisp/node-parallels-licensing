@@ -19,7 +19,7 @@
   ],
   "dependencies": {
     "request": "2.21.x",
-    "JSONStream": "*"
+    "JSONStream": "0.10.0"
   },
   "main": "./parallels",
   "engines": {
