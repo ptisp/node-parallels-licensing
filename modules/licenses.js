@@ -85,16 +85,15 @@ Licenses.prototype.renewKey = function (id, callback) {
       autoRenew - Boolean - Specifies whether a license key is renewed automatically by Key Administrator
  * @param {Function} callback
  */
-Licenses.prototype.createKey = function (opts, callback) {
+ Licenses.prototype.createKey = function (opts, callback) {
+   var createOptions = {
+     client: this,
+     opt: {'return-key-state':'yes'},
+     body: opts
+   };
 
-  var createOptions = {
-    client: this,
-    opt: '',
-    body: opts
-  };
-
-  utils.modem('keys/', 'POST', createOptions, callback);
-};
+   utils.modem('keys', 'POST', createOptions, callback);
+ };
 
 
 module.exports = Licenses;
