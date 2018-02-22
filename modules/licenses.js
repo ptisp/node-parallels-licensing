@@ -50,10 +50,9 @@ Licenses.prototype.getKeyDetails = function (id, callback) {
  * @param {Function} callback
  */
 Licenses.prototype.terminateKey = function (id, callback) {
-
   var createOptions = {
     client: this,
-    opt: ''
+    opt: {'return-key-state':'yes'}
   };
 
   utils.modem('keys/'+id, 'DELETE', createOptions, callback);
@@ -65,10 +64,9 @@ Licenses.prototype.terminateKey = function (id, callback) {
  * @param {Function} callback
  */
 Licenses.prototype.renewKey = function (id, callback) {
-
   var createOptions = {
     client: this,
-    opt: ''
+    opt: {'return-key-state':'yes'}
   };
 
   utils.modem('keys/'+id+'/renew', 'GET', createOptions, callback);

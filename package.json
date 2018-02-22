@@ -1,7 +1,7 @@
 {
   "name": "parallels-licensing",
   "description": "PARALLELS API 3.0 client.",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": "Pedro Pacheco <pedro.mpp@gmail.com>",
   "maintainers": [
     "pedrompp <pedro.mpp@gmail.com>"
