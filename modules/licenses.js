@@ -93,5 +93,34 @@ Licenses.prototype.renewKey = function (id, callback) {
    utils.modem('keys', 'POST', createOptions, callback);
  };
 
+/**
+ * Applies a promotion to a license key
+ * @param  {string}   id       Key ID
+ * @param  {string}   type    license item type
+ * @param  {string}   promo   promo item name
+ * @param  {Function} callback
+ */
+Licenses.prototype.applyPromo = function(id, type, promo, callback) {
+  var opts = {
+    items: [{
+        item: type
+      },
+      {
+        item: promo
+      }
+    ]
+  };
+
+  var createOptions = {
+    client: this,
+    opt: {
+      'return-key-state': 'yes'
+    },
+    body: opts
+  };
+
+  utils.modem('keys/' + id, 'PUT', createOptions, callback);
+};
+
 
 module.exports = Licenses;
