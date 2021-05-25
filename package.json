@@ -18,7 +18,7 @@
     "hosting"
   ],
   "dependencies": {
-    "request": "2.21.x",
+    "request": "2.88.x",
     "JSONStream": "0.10.0"
   },
   "main": "./parallels",
